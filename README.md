@@ -75,6 +75,23 @@ Six layers of native motion, all GPU-friendly, all within the performance budget
 
 ---
 
+## 🛠️ Tech Stack
+
+Deliberately minimal — the platform *is* the stack.
+
+| Layer | What | Why |
+|---|---|---|
+| **Markup** | Semantic **HTML5** | `<header>/<main>/<section>/<footer>`, single `<h1>`, JSON-LD + Open Graph for SEO |
+| **Styling** | **Custom CSS** (variables) | No Tailwind, no Bootstrap — hand-authored design tokens + glassmorphism |
+| **Logic** | **Vanilla JavaScript** (ES Modules) | No React/Vue/Svelte — direct DOM control = guaranteed state isolation |
+| **Motion** | `<canvas>` · WAAPI · CSS `@property` · `linear()` · `animation-timeline` · View Transitions | 100% native browser APIs — no Framer Motion, no GSAP |
+| **Tooling** | **None** | No bundler, no transpiler, no `package.json`. Open and run. |
+| **Hosting** | Any static host | Vercel / Netlify / GitHub Pages — it's just files |
+
+> **Frameworks used: 0 · Libraries used: 0 · Build steps: 0.**
+
+---
+
 ## 🏛️ Architecture
 
 ```
