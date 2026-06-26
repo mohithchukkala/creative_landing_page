@@ -1,0 +1,9 @@
+# Dependencies / OS
+node_modules
+.DS_Store
+
+# Local-only working files (not part of the submission)
+frames/
+demo.mp4
+FB_Round_1.pdf
+.claude/
