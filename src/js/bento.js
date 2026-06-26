@@ -99,6 +99,14 @@ export function initBento(root) {
     node.addEventListener('pointerenter', () => {
       if (!isMobile) activeIndex = i;
     });
+    // Pointer-tracking glow (desktop micro-interaction). Writes only CSS custom
+    // properties — no layout reads, no reflow.
+    node.addEventListener('pointermove', (e) => {
+      if (isMobile) return;
+      const r = node.getBoundingClientRect();
+      node.style.setProperty('--mx', ((e.clientX - r.left) / r.width) * 100 + '%');
+      node.style.setProperty('--my', ((e.clientY - r.top) / r.height) * 100 + '%');
+    });
     // Accordion header click (mobile)
     headOf(i).addEventListener('click', () => {
       if (!isMobile) return; // headers are non-collapsing on desktop bento

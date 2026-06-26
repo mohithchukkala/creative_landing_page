@@ -367,6 +367,20 @@ section { padding: clamp(56px, 9vw, 120px) clamp(20px, 5vw, 40px); }
 .js [data-reveal].is-visible { opacity: 1; transform: none;
   transition: opacity var(--t-reflow) var(--e-out), transform var(--t-reflow) var(--e-out); }
 
+/* Staggered children — choreographed cascade. Delays are small enough that the
+   hero (above the fold) stays within the 500ms entrance budget:
+   max 4×60ms (=240ms) + 360ms transition = 600ms total only for lower groups;
+   the hero stats use ≤3 children so finish well under 500ms. */
+.js [data-stagger] > * { opacity: 0; transform: translateY(14px); }
+.js [data-stagger].is-visible > * { opacity: 1; transform: none;
+  transition: opacity var(--t-reflow) var(--e-out), transform var(--t-reflow) var(--e-out); }
+.js [data-stagger].is-visible > *:nth-child(1) { transition-delay: 0ms; }
+.js [data-stagger].is-visible > *:nth-child(2) { transition-delay: 60ms; }
+.js [data-stagger].is-visible > *:nth-child(3) { transition-delay: 120ms; }
+.js [data-stagger].is-visible > *:nth-child(4) { transition-delay: 180ms; }
+.js [data-stagger].is-visible > *:nth-child(5) { transition-delay: 240ms; }
+.js [data-stagger].is-visible > *:nth-child(n+6) { transition-delay: 300ms; }
+
 /* ============================ Responsive ============================ */
 @media (max-width: 900px) {
   .hero__grid { grid-template-columns: 1fr; }
