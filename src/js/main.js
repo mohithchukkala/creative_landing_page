@@ -12,6 +12,8 @@
 
 import { initPricing } from './pricing.js';
 import { initBento } from './bento.js';
+import { initTilt } from './tilt.js';
+import { initNeural } from './neural.js';
 import { METRICS } from './data.js';
 
 const ORCHESTRATION_BUDGET = 500; // ms — hard cap per the brief
@@ -84,6 +86,7 @@ function boot() {
   // Interactive immediately — build enhanced components.
   initPricing(document.getElementById('pricing'));
   initBento(document.getElementById('features'));
+  initTilt(document.querySelectorAll('.tier'));
   initReveal();
 
   // Kick the entrance orchestration; keep it inside the 500ms budget.
@@ -91,6 +94,11 @@ function boot() {
     document.documentElement.classList.add('is-entered');
     dismissLoader();
   });
+
+  // Heavy ambient canvas: defer to idle so it never blocks TTI / the 500ms budget.
+  const startNeural = () => initNeural(document.getElementById('neural'));
+  if ('requestIdleCallback' in window) requestIdleCallback(startNeural, { timeout: 1500 });
+  else setTimeout(startNeural, 600);
 }
 
 if (document.readyState === 'loading') {

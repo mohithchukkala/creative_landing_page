@@ -56,6 +56,9 @@
 
   <a class="skip-link" href="#main">Skip to content</a>
 
+  <!-- Native scroll-driven progress bar (CSS scroll() timeline; no JS) -->
+  <div class="scroll-progress" aria-hidden="true"></div>
+
   <header class="site-header" data-reveal>
     <nav class="nav" aria-label="Primary">
       <a class="brand" href="#main" aria-label="Nexus AI home">
@@ -78,6 +81,7 @@
     <!-- ========================== HERO ========================== -->
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero__aurora" aria-hidden="true"></div>
+      <canvas id="neural" class="hero__neural" aria-hidden="true"></canvas>
       <div class="hero__grid">
         <div class="hero__copy" data-reveal>
           <p class="eyebrow"><span class="pulse" aria-hidden="true"></span> Live · v4 orchestration engine</p>

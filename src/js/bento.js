@@ -48,6 +48,8 @@ export function initBento(root) {
 
   const nodes = Array.from(container.querySelectorAll('[data-node]'));
   const mq = window.matchMedia(MOBILE_QUERY);
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const supportsVT = typeof document.startViewTransition === 'function';
 
   let activeIndex = 0;          // last hovered (desktop) / open panel (mobile)
   let isMobile = mq.matches;
@@ -99,13 +101,21 @@ export function initBento(root) {
     node.addEventListener('pointerenter', () => {
       if (!isMobile) activeIndex = i;
     });
-    // Pointer-tracking glow (desktop micro-interaction). Writes only CSS custom
-    // properties — no layout reads, no reflow.
+    // Pointer-tracking glow + 3D tilt (desktop micro-interaction). One rect read
+    // per move; writes only CSS custom properties — no reflow.
     node.addEventListener('pointermove', (e) => {
       if (isMobile) return;
       const r = node.getBoundingClientRect();
-      node.style.setProperty('--mx', ((e.clientX - r.left) / r.width) * 100 + '%');
-      node.style.setProperty('--my', ((e.clientY - r.top) / r.height) * 100 + '%');
+      const px = (e.clientX - r.left) / r.width;
+      const py = (e.clientY - r.top) / r.height;
+      node.style.setProperty('--mx', px * 100 + '%');
+      node.style.setProperty('--my', py * 100 + '%');
+      node.style.setProperty('--ry', ((px - 0.5) * 8).toFixed(2) + 'deg');
+      node.style.setProperty('--rx', ((py - 0.5) * -8).toFixed(2) + 'deg');
+    });
+    node.addEventListener('pointerleave', () => {
+      node.style.removeProperty('--rx');
+      node.style.removeProperty('--ry');
     });
     // Accordion header click (mobile)
     headOf(i).addEventListener('click', () => {
@@ -141,8 +151,15 @@ export function initBento(root) {
   const onChange = (e) => {
     const nowMobile = e.matches;
     if (nowMobile === isMobile) return;
-    isMobile = nowMobile;
-    applyMode(true); // animate the transition + context handoff
+    // Native View Transitions API morphs the grid↔list layout (zero libraries).
+    // When VT runs, the state flips synchronously and VT animates the morph;
+    // otherwise we fall back to the hand-written WAAPI height animation.
+    if (supportsVT && !reduceMotion) {
+      document.startViewTransition(() => { isMobile = nowMobile; applyMode(false); });
+    } else {
+      isMobile = nowMobile;
+      applyMode(true); // animate the context handoff via WAAPI
+    }
   };
   // addEventListener('change') is the modern, supported API
   mq.addEventListener('change', onChange);
